@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Image ASCII Studio</title>
+    <link rel="stylesheet" href="styles.css?v=5">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="controls" aria-labelledby="app-title">
+        <div class="brand-row">
+          <div>
+            <p class="eyebrow">Local image converter</p>
+            <h1 id="app-title">Image ASCII Studio</h1>
+          </div>
+        </div>
+
+        <div class="upload-panel" id="drop-zone">
+          <input id="image-input" class="file-input" type="file" accept="image/*">
+          <label class="file-label" for="image-input">Choose Photo</label>
+          <button class="secondary-button" id="camera-button" type="button">Camera</button>
+          <p id="file-name" class="file-name">No image selected</p>
+        </div>
+
+        <div class="camera-panel" id="camera-panel" hidden>
+          <video id="camera-video" playsinline autoplay muted></video>
+          <div class="button-row">
+            <button id="capture-button" type="button" disabled>Capture</button>
+            <button class="secondary-button" id="close-camera-button" type="button">Close</button>
+          </div>
+        </div>
+
+        <form class="settings" id="settings-form">
+          <fieldset>
+            <legend>Output</legend>
+            <div class="segmented three" role="radiogroup" aria-label="Output mode">
+              <label>
+                <input type="radio" name="mode" value="mono" checked>
+                <span>BW</span>
+              </label>
+              <label>
+                <input type="radio" name="mode" value="color">
+                <span>Color</span>
+              </label>
+              <label>
+                <input type="radio" name="mode" value="black">
+                <span>Black</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset id="color-settings">
+            <legend>Color</legend>
+            <div class="segmented" role="radiogroup" aria-label="Color style">
+              <label>
+                <input type="radio" name="colorStyle" value="ink" checked>
+                <span>Glyphs</span>
+              </label>
+              <label>
+                <input type="radio" name="colorStyle" value="fill">
+                <span>Image</span>
+              </label>
+            </div>
+          </fieldset>
+
+          <label class="range-control">
+            <span>
+              Detail
+              <output id="detail-value" for="detail">420</output>
+            </span>
+            <input id="detail" name="detail" type="range" min="80" max="900" value="420" step="10">
+          </label>
+
+          <label class="range-control">
+            <span>
+              Character Size
+              <output id="font-value" for="fontSize">6px</output>
+            </span>
+            <input id="fontSize" name="fontSize" type="range" min="3" max="14" value="6" step="1">
+          </label>
+
+          <label class="range-control">
+            <span>
+              Glyph Strength
+              <output id="glyph-value" for="glyphStrength">1.00</output>
+            </span>
+            <input id="glyphStrength" name="glyphStrength" type="range" min="0.35" max="1" value="1" step="0.05">
+          </label>
+
+          <label class="range-control">
+            <span>
+              Shape
+              <output id="shape-value" for="shape">0.72</output>
+            </span>
+            <input id="shape" name="shape" type="range" min="0.45" max="0.9" value="0.72" step="0.01">
+          </label>
+
+          <label class="range-control">
+            <span>
+              Contrast
+              <output id="contrast-value" for="contrast">1.18</output>
+            </span>
+            <input id="contrast" name="contrast" type="range" min="0.65" max="2.2" value="1.18" step="0.01">
+          </label>
+
+          <label class="range-control">
+            <span>
+              Brightness
+              <output id="brightness-value" for="brightness">0</output>
+            </span>
+            <input id="brightness" name="brightness" type="range" min="-0.35" max="0.35" value="0" step="0.01">
+          </label>
+
+          <label class="range-control">
+            <span>
+              Edge
+              <output id="edge-value" for="edge">0.35</output>
+            </span>
+            <input id="edge" name="edge" type="range" min="0" max="1.2" value="0.35" step="0.01">
+          </label>
+
+          <div class="toggle-grid">
+            <label class="toggle">
+              <input id="dither" name="dither" type="checkbox" checked>
+              <span>Dither</span>
+            </label>
+            <label class="toggle">
+              <input id="invert" name="invert" type="checkbox">
+              <span>Invert</span>
+            </label>
+          </div>
+
+          <label class="select-control">
+            <span>Characters</span>
+            <select id="charset" name="charset">
+              <option value="detailed" selected>Detailed</option>
+              <option value="classic">Classic</option>
+              <option value="dense">Dense</option>
+              <option value="minimal">Minimal</option>
+            </select>
+          </label>
+        </form>
+
+        <button class="secondary-button reset-button" id="reset-button" type="button">Reset Sliders</button>
+
+        <div class="actions">
+          <button id="copy-button" type="button" disabled>Copy Text</button>
+          <button id="txt-button" type="button" disabled>TXT</button>
+          <button id="png-button" type="button" disabled>PNG</button>
+          <button id="html-button" type="button" disabled>HTML</button>
+        </div>
+      </section>
+
+      <section class="workspace" aria-label="ASCII preview">
+        <div class="preview-bar">
+          <div>
+            <p class="eyebrow">Preview</p>
+            <p class="status" id="status" role="status">Choose a photo to begin.</p>
+          </div>
+          <div class="stats" id="stats" aria-live="polite">0 x 0</div>
+        </div>
+
+        <div class="preview-stage" id="preview-stage" tabindex="0" role="region" aria-label="Scrollable ASCII preview">
+          <canvas id="ascii-canvas" role="img" aria-label="Generated ASCII art"></canvas>
+        </div>
+      </section>
+    </main>
+
+    <canvas id="source-canvas" hidden></canvas>
+    <script src="app.js?v=5"></script>
+  </body>
+</html>
